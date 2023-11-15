@@ -51,6 +51,7 @@ class Hooks {
 		$request = $out->getRequest();
 		$optionsConfig = $config = $out->getConfig()->get( 'MultiBoilerplateOptions' );
 		$allowContentOverwrite = $out->getConfig()->get( 'MultiBoilerplateOverwrite' );
+		$useDefault = $out->getConfig()->get( 'MultiBoilerplateUseDefault' );
 
 		// If $wgMultiBoilerplateOverwrite is true then detect whether
 		// the current page exists or not and if it does return true
@@ -140,8 +141,8 @@ class Hooks {
 			. Xml::closeElement( 'form' );
 
 		// If the Load button has been pushed replace the article text with the boilerplate.
-		if ( $request->getText( 'boilerplate', false ) ) {
-			$boilerplateTitle = Title::newFromText( $request->getVal( 'boilerplate' ) );
+		if ( $request->getText( 'boilerplate', $useDefault ) ) {
+			$boilerplateTitle = Title::newFromText( $request->getVal( 'boilerplate', $useDefault? reset($optionsConfig): false ) );
 			if ( !$boilerplateTitle->exists() ) {
 				$out->addHTML(
 					'<strong class="error">'
